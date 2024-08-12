@@ -20,6 +20,8 @@ movimento classico/salto
 [abilita sboccabili]
 -dash in una direzione
 -rampino ovunque solo su superfici d'oro(la siringa e il rampino) (se usi il rampino non puoi lanciare la siringa)
+Versione di unity da utilizzare: 2022.3.41f1
+
 --------------------------------------------------------------------------------------------------------------------
 
 
