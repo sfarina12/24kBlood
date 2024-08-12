@@ -18,7 +18,7 @@ i nemici sono 3 in totale, esattamente come i boss
 movimento classico/salto
 
 [abilita sboccabili]
--dash in una direzione
+-dash in una direzione (permette di restare in aria per un tempo prolungato, consentendo un salto in avanti più lungo)
 -rampino ovunque solo su superfici d'oro(la siringa e il rampino) (se usi il rampino non puoi lanciare la siringa)
 Versione di unity da utilizzare: 2022.3.41f1
 
