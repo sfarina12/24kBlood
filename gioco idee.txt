@@ -1,0 +1,26 @@
+almeno un ora di durata del gioco
+
+medievale
+castello medievale
+
+sei un emo(sangue)-alchimista con una pistola
+il tuo e trovare l'ingrediente per trasformare tutto in oro! (tocco di mida)
+3 boss al massimo
+aggiungere le scorciatoie
+esiste un hub dove tutte le stanze si collegano
+
+mano sinistra del player ha una simil siringa da lanciarla contro i cadaveri dei mostri per ricaricare i proiettili
+
+per curarti usi la siringa su di te
+
+i nemici sono 3 in totale, esattamente come i boss
+
+movimento classico/salto
+
+[abilita sboccabili]
+-dash in una direzione
+-rampino ovunque solo su superfici d'oro(la siringa e il rampino) (se usi il rampino non puoi lanciare la siringa)
+--------------------------------------------------------------------------------------------------------------------
+
+
+
