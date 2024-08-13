@@ -1,2 +1,2 @@
 # 24kBlood
-A unity shootervania located into an gothic castle
+A unity shootervania located into a gothic castle
