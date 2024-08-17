@@ -1,0 +1,34 @@
+{
+    "name": "PlayerInputActionSet",
+    "maps": [
+        {
+            "name": "Movement",
+            "id": "50791b37-6a70-4ae1-abc3-e64a111e8e1c",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "068befeb-e025-456a-aa1f-5ea0bcafdd8a",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "45919939-485f-4373-b5fa-792329813052",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
