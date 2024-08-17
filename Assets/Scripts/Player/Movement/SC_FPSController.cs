@@ -7,8 +7,7 @@ using UnityEngine.InputSystem;
 
 public class SC_FPSController : MonoBehaviour
 {
-    [Header("New stuff")]
-    public InputAction playerInput;
+    private PlayerInputActionSet playerInput;
 
     [Space,Header("Movement settings")]
     public float walkingSpeed = 7.5f;
@@ -38,23 +37,20 @@ public class SC_FPSController : MonoBehaviour
     [HideInInspector] public bool isGrounded = false;
 
     void Start() {
+        playerInput = new PlayerInputActionSet();
+        playerInput.Enable();
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update() {
+        Vector2 debugMovement = playerInput.Movement.Move.ReadValue<Vector2>();
+        Debug.Log(debugMovement);
 
-
-
-
-
-
-
-
-
-        // Vector3 forward = transform.TransformDirection(Vector3.forward);
-        // Vector3 right = transform.TransformDirection(Vector3.right);
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
+        // Aggiungere i comandi di corsa e accovacciamento + salto con relative velocità
 
         // isRunning = Input.GetKey(KeyCode.LeftShift);
         // isCrouch = Input.GetKey(KeyCode.LeftControl);
@@ -62,8 +58,8 @@ public class SC_FPSController : MonoBehaviour
         // //isGrounded = groundChecker();
         // isGrounded = characterController.isGrounded;
 
-        // float curSpeedX = 0f;
-        // float curSpeedY = 0f;
+        float cursorSpeedX = debugMovement.x*walkingSpeed;
+        float cursorSpeedY = debugMovement.y*walkingSpeed;
         // if (canMove) {
         //     if (isRunning && !isCrouch) {
         //         curSpeedX = runningSpeed * Input.GetAxis("Vertical");
@@ -78,7 +74,7 @@ public class SC_FPSController : MonoBehaviour
         
 
         //     float movementDirectionY = moveDirection.y;
-        //     moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+             moveDirection = (forward * cursorSpeedX) + (right * cursorSpeedY);
 
         //     if (moveDirection == Vector3.zero) { audioWalking.stopAudio(); audioRunning.stopAudio(); }
         //     else if (isRunning) { audioRunning.playAudio(); audioWalking.stopAudio(); }
@@ -90,7 +86,7 @@ public class SC_FPSController : MonoBehaviour
 
         //     if (!isGrounded) { moveDirection.y -= gravity * Time.deltaTime; }    
             
-        //     characterController.Move(moveDirection * Time.deltaTime);
+             characterController.Move(moveDirection * Time.deltaTime);
 
         //     if(moveDirection == Vector3.zero) { isMoving = false; }
         //     else { isMoving = true; }
