@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,31 +47,32 @@ public class SC_FPSController : MonoBehaviour
 
     void Update() {
         Vector2 debugMovement = playerInput.Movement.Move.ReadValue<Vector2>();
+        canMove = !debugMovement.Equals(Vector2.zero);
+        isCrouch = playerInput.Movement.Crouch.IsPressed();
+        isRunning = playerInput.Movement.Run.IsPressed();
+        isGrounded = !playerInput.Movement.Jump.IsPressed();
         Debug.Log(debugMovement);
 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
-        // Aggiungere i comandi di corsa e accovacciamento + salto con relative velocità
-
-        // isRunning = Input.GetKey(KeyCode.LeftShift);
-        // isCrouch = Input.GetKey(KeyCode.LeftControl);
+        // Aggiungere i comandi di salto con relative velocità
 
         // //isGrounded = groundChecker();
         // isGrounded = characterController.isGrounded;
 
         float cursorSpeedX = debugMovement.x*walkingSpeed;
         float cursorSpeedY = debugMovement.y*walkingSpeed;
-        // if (canMove) {
-        //     if (isRunning && !isCrouch) {
-        //         curSpeedX = runningSpeed * Input.GetAxis("Vertical");
-        //         curSpeedY = runningSpeed * Input.GetAxis("Horizontal");
-        //     } else if (isCrouch) {
-        //         curSpeedX = crouchingSpeed * Input.GetAxis("Vertical");
-        //         curSpeedY = crouchingSpeed * Input.GetAxis("Horizontal");
-        //     } else {
-        //         curSpeedX = walkingSpeed * Input.GetAxis("Vertical");
-        //         curSpeedY = walkingSpeed * Input.GetAxis("Horizontal");
-        //     }
+         if (canMove) {
+            if (isRunning && !isCrouch) {
+                cursorSpeedX = runningSpeed * debugMovement.x;
+                cursorSpeedY = runningSpeed * debugMovement.y;
+            } else if (isCrouch) {
+                cursorSpeedX = crouchingSpeed * debugMovement.x;
+                cursorSpeedY = crouchingSpeed * debugMovement.y;
+            } else {
+                cursorSpeedX = walkingSpeed * debugMovement.x;
+                cursorSpeedY = walkingSpeed * debugMovement.y;
+            }
         
 
         //     float movementDirectionY = moveDirection.y;
@@ -98,7 +100,8 @@ public class SC_FPSController : MonoBehaviour
         //         playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
         //         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         //     }
-        // } else { isMoving = false; }
+        // } else { isMoving = false; 
+        }
     }
     
     bool groundChecker() {
