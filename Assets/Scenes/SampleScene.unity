@@ -182,7 +182,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 77379e47dfffadf4197aa0efbbe252c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -287,7 +287,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fc103a6b7bbca574b8c30dbd5ec21fc3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 245056497}
   - component: {fileID: 245056502}
   - component: {fileID: 245056501}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -457,33 +457,35 @@ MonoBehaviour:
   walkingSpeed: 7.5
   runningSpeed: 11.5
   crouchingSpeed: 3.75
-  jumpStrength: 30
-  jumpDecrementFactor:
+  maxJumpHeight: 2
+  jumpStrength: 10
+  jumpVelocity: 5
+  jumpCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
-      inSlope: -5.185413
-      outSlope: -3.2068596
-      tangentMode: 1
+      value: 7.894258
+      inSlope: 0.6933067
+      outSlope: 0.6933067
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.022214236
+      outWeight: 0.023538318
     - serializedVersion: 3
-      time: 0.9998718
+      time: 1
       value: 0
-      inSlope: -0.09456042
-      outSlope: 0
-      tangentMode: 1
+      inSlope: -19.00047
+      outSlope: -19.00047
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.045119885
+      inWeight: 0.03039515
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  gravity: 20
-  gravityDecrementFactor:
+  gravityStrength: 20
+  gravityCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -507,19 +509,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  playerCamera: {fileID: 0}
-  lookSpeed: 2
-  lookXLimit: 45
+  gravityVelocity: 5
+  groundDistance: 1
+  ignoreLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  playerCamera: {fileID: 330585543}
+  lookSpeed: 15
+  lookXLimit: 75
   audioWalking: {fileID: 0}
   audioRunning: {fileID: 0}
-  characterController: {fileID: 0}
+  characterController: {fileID: 245056502}
   direction: {x: 0, y: 0, z: 0}
   movementDirectionY: 0
   canMove: 1
   isRunning: 0
   isCrouch: 0
   isMoving: 0
-  isGrounded: 0
 --- !u!143 &245056502
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1017,7 +1023,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fc103a6b7bbca574b8c30dbd5ec21fc3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1122,7 +1128,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 77379e47dfffadf4197aa0efbbe252c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
