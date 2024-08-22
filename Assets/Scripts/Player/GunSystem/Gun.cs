@@ -33,7 +33,7 @@ public class Gun : MonoBehaviour
         currentAmmo--;
         Debug.Log("Ammo left: "+currentAmmo);
         RaycastHit hit;
-        muzzle.Play();
+        //muzzle.Play();
         if(Physics.Raycast(cam.position, cam.forward, out hit, range)){
             if(hit.collider.GetComponent<Damageable>() != null){
                 hit.collider.GetComponent<Damageable>().TakeDamage(damage);

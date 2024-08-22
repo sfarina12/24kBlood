@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,9 +14,13 @@ public class SC_FPSController : MonoBehaviour
     public float runningSpeed = 11.5f;
     public float crouchingSpeed = 3.75f;
     [Space]
+    [Tooltip("max jump haight relative to the place the start jumping")]
     public float maxJumpHeight = 8.0f;
+    [Tooltip("The max strenght applied when performing jump")]
     public float jumpStrength = 8.0f;
+    [Tooltip("How quickly move across the curve")]
     public float jumpVelocity = 1f;
+    [Tooltip("How the force of the jump will be mdified over time")]
     public AnimationCurve jumpCurve;
     [Space]
     public float gravityStrength = 20f;
@@ -23,7 +28,6 @@ public class SC_FPSController : MonoBehaviour
     public float gravityVelocity = 1f;
     [Space]
     public float groundDistance = 1f;
-    public LayerMask ignoreLayers;
 
     [Space,Header("Look settings")]
     public GameObject playerCamera;
@@ -34,18 +38,20 @@ public class SC_FPSController : MonoBehaviour
     public audioPlayer audioWalking;
     public audioPlayer audioRunning;
 
-    [Space, Header("Gun Settings for player")]
+    [Space,Header("Input System"),Tooltip("Can be null. If null will get input system from player")]
+    public PlayerInputManager input;
+
     public Gun gun;
 
-    Coroutine fireCoroutine;
     float rotation_x = 0;
-    float jump_factor = 1;
+    float jump_factor = 0;
     float gravity_factor = 0;
     float jumpforce_y = 0;
     float gravityforce_y = 0;    
-    float start_jump_height = -1.4f;
+    float start_jump_height = 0;
     bool canJumping = false;
-    PlayerInputActionSet playerInput;
+    bool performingJump = false;
+    Coroutine fireCoroutine;   
     [HideInInspector] public CharacterController characterController;
     [HideInInspector] public Vector3 direction = Vector3.zero;
     [HideInInspector] public float movementDirectionY;
@@ -59,26 +65,22 @@ public class SC_FPSController : MonoBehaviour
     
 
     void Start() {
-        playerInput = new PlayerInputActionSet();
-        playerInput.Enable();
+        if(input == null) { 
+            GameObject A = GameObject.Find("Player");
+            if(A == null) { Debug.Log("No [Player] gameobject found for script <SC_FPSController>"); }
+            input = A.GetComponent<PlayerInputManager>(); 
+            if(input == null) { Debug.Log("No <PlayerInputManager> component found for script <SC_FPSController>"); }
+        }
 
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        //Subscription to button actions...
-        
-        //playerInput.Combat.Shoot.performed += ctx => gun.Shoot();
-        playerInput.Combat.StartFiring.performed += ctx => StartFiring();
-        playerInput.Combat.StopFiring.performed += ctx => stopFiring();
-        playerInput.Combat.Reload.performed += ctx => gun.ReloadFunction();
-
-        //
     }
 
     void Update() {
-        Vector2 inputDirectionValues = playerInput.Movement.Move.ReadValue<Vector2>();
-        Vector2 inputRotationValues = playerInput.Movement.Look.ReadValue<Vector2>();
-        bool isJumping = playerInput.Movement.Jump.ReadValue<float>() == 1 ? true : false;
+        Vector2 inputDirectionValues = input.inputSet.Movement.Move.ReadValue<Vector2>();
+        Vector2 inputRotationValues = input.inputSet.Movement.Look.ReadValue<Vector2>();
+        bool isJumping = input.inputSet.Movement.Jump.ReadValue<float>() == 1 ? true : false;
 
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
@@ -91,28 +93,39 @@ public class SC_FPSController : MonoBehaviour
         //--------------------[CALCULATE JUMP & GRAVITY FORCE]--------------------  
         float max_factor_j,max_factor_g;
         
-        if(isJumping && canJumping) {
-            max_factor_j = 0;
+        max_factor_j = 0;
+        if((isJumping && canJumping) || performingJump) {
+            //performing jump
+            max_factor_j = 1;
             max_factor_g = 0;
-            if(start_jump_height == -1.4f) { start_jump_height = transform.position.y; }
-            if((transform.position.y - start_jump_height) >= maxJumpHeight) { canJumping = false; }
+            
+            performingJump = true;
+            if(start_jump_height == 0) { start_jump_height = transform.position.y; }
+            if((transform.position.y - start_jump_height) >= maxJumpHeight) { canJumping = false; performingJump = false; }
+
         } else if(characterController.isGrounded) {
-            max_factor_j = 1;
+            //is on ground
             max_factor_g = 0; 
+            jump_factor = 0;
+            gravity_factor = 0;
+
+            performingJump = false;
             canJumping = true;
-            start_jump_height = -1.4f;
+            start_jump_height = 0;
         } else {
-            max_factor_j = 1;
+            //is in air
             max_factor_g = 1; 
+            
             canJumping = false;
+            performingJump = false;
         }
 
-        jump_factor = Mathf.Lerp(jump_factor,max_factor_j,Time.deltaTime * jumpVelocity);
+        jump_factor = Mathf.Lerp(jump_factor,max_factor_j,(start_jump_height + maxJumpHeight) - transform.position.y);
         jumpforce_y = jumpCurve.Evaluate(jump_factor); 
 
         gravity_factor = Mathf.Lerp(gravity_factor,max_factor_g,Time.deltaTime * gravityVelocity);
         gravityforce_y = gravityCurve.Evaluate(gravity_factor); 
-
+        //Debug.Log(jump_factor);
         velocity_z = (jumpforce_y * jumpStrength) - (gravityforce_y * gravityStrength);
 
         //END ----------------[CALCULATE JUMP & GRAVITY FORCE]--------------------  
@@ -132,7 +145,7 @@ public class SC_FPSController : MonoBehaviour
         transform.rotation *= Quaternion.Euler(0, rotation_y, 0);
 
         //End camera movement logic
-
+        
         
     }
 
@@ -144,4 +157,6 @@ public class SC_FPSController : MonoBehaviour
         StopCoroutine(fireCoroutine);
         }
     }
+
+
 }
