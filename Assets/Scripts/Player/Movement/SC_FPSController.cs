@@ -34,6 +34,10 @@ public class SC_FPSController : MonoBehaviour
     public audioPlayer audioWalking;
     public audioPlayer audioRunning;
 
+    [Space, Header("Gun Settings for player")]
+    public Gun gun;
+
+    Coroutine fireCoroutine;
     float rotation_x = 0;
     float jump_factor = 1;
     float gravity_factor = 0;
@@ -50,6 +54,10 @@ public class SC_FPSController : MonoBehaviour
     [HideInInspector] public bool isCrouch = false;
     [HideInInspector] public bool isMoving = false;
 
+    
+
+    
+
     void Start() {
         playerInput = new PlayerInputActionSet();
         playerInput.Enable();
@@ -57,6 +65,14 @@ public class SC_FPSController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //Subscription to button actions...
+        
+        //playerInput.Combat.Shoot.performed += ctx => gun.Shoot();
+        playerInput.Combat.StartFiring.performed += ctx => StartFiring();
+        playerInput.Combat.StopFiring.performed += ctx => stopFiring();
+        playerInput.Combat.Reload.performed += ctx => gun.ReloadFunction();
+
+        //
     }
 
     void Update() {
@@ -102,7 +118,7 @@ public class SC_FPSController : MonoBehaviour
         //END ----------------[CALCULATE JUMP & GRAVITY FORCE]--------------------  
 
 
-
+        //Camera movement logic here
 
         Vector3 direction = (forward * velocity_x) + (right * velocity_y) + (up * velocity_z);
 
@@ -114,5 +130,18 @@ public class SC_FPSController : MonoBehaviour
         rotation_x = Mathf.Clamp(rotation_x, -lookXLimit, lookXLimit);
         playerCamera.transform.localRotation = Quaternion.Euler(rotation_x, 0, 0);
         transform.rotation *= Quaternion.Euler(0, rotation_y, 0);
+
+        //End camera movement logic
+
+        
+    }
+
+    void StartFiring(){
+        fireCoroutine = StartCoroutine(gun.FastFire());
+    }
+    void stopFiring(){
+        if(fireCoroutine != null){
+        StopCoroutine(fireCoroutine);
+        }
     }
 }

@@ -211,6 +211,94 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Combat"",
+            ""id"": ""ec8d6bf7-2634-4d47-a2ec-250d09efa992"",
+            ""actions"": [
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""becdb73e-a5e5-44a6-bb3c-3244018bb8ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StartFiring"",
+                    ""type"": ""Button"",
+                    ""id"": ""af707ad6-58b5-4ca3-afc6-fecf8debc39b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StopFiring"",
+                    ""type"": ""Button"",
+                    ""id"": ""33c19cf0-7fb9-4016-9a1b-1e56cc52ed83"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""30d2bce5-a669-4b8d-97bc-4713e520540d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""25011e66-8a1c-48c5-a1d8-c0d8bf41a90d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce575faf-87f5-42db-b8fc-f60c2285e2ef"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartFiring"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""21726fff-63e1-428d-a060-1208db797421"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StopFiring"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""25708778-3410-4cec-8ba6-40c6f6b2ae49"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -220,6 +308,12 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         m_Movement_Look = m_Movement.FindAction("Look", throwIfNotFound: true);
+        // Combat
+        m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
+        m_Combat_Shoot = m_Combat.FindAction("Shoot", throwIfNotFound: true);
+        m_Combat_StartFiring = m_Combat.FindAction("StartFiring", throwIfNotFound: true);
+        m_Combat_StopFiring = m_Combat.FindAction("StopFiring", throwIfNotFound: true);
+        m_Combat_Reload = m_Combat.FindAction("Reload", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,10 +433,87 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // Combat
+    private readonly InputActionMap m_Combat;
+    private List<ICombatActions> m_CombatActionsCallbackInterfaces = new List<ICombatActions>();
+    private readonly InputAction m_Combat_Shoot;
+    private readonly InputAction m_Combat_StartFiring;
+    private readonly InputAction m_Combat_StopFiring;
+    private readonly InputAction m_Combat_Reload;
+    public struct CombatActions
+    {
+        private @PlayerInputActionSet m_Wrapper;
+        public CombatActions(@PlayerInputActionSet wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Shoot => m_Wrapper.m_Combat_Shoot;
+        public InputAction @StartFiring => m_Wrapper.m_Combat_StartFiring;
+        public InputAction @StopFiring => m_Wrapper.m_Combat_StopFiring;
+        public InputAction @Reload => m_Wrapper.m_Combat_Reload;
+        public InputActionMap Get() { return m_Wrapper.m_Combat; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CombatActions set) { return set.Get(); }
+        public void AddCallbacks(ICombatActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CombatActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CombatActionsCallbackInterfaces.Add(instance);
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
+            @StartFiring.started += instance.OnStartFiring;
+            @StartFiring.performed += instance.OnStartFiring;
+            @StartFiring.canceled += instance.OnStartFiring;
+            @StopFiring.started += instance.OnStopFiring;
+            @StopFiring.performed += instance.OnStopFiring;
+            @StopFiring.canceled += instance.OnStopFiring;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
+        }
+
+        private void UnregisterCallbacks(ICombatActions instance)
+        {
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
+            @StartFiring.started -= instance.OnStartFiring;
+            @StartFiring.performed -= instance.OnStartFiring;
+            @StartFiring.canceled -= instance.OnStartFiring;
+            @StopFiring.started -= instance.OnStopFiring;
+            @StopFiring.performed -= instance.OnStopFiring;
+            @StopFiring.canceled -= instance.OnStopFiring;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
+        }
+
+        public void RemoveCallbacks(ICombatActions instance)
+        {
+            if (m_Wrapper.m_CombatActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICombatActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CombatActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CombatActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CombatActions @Combat => new CombatActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+    }
+    public interface ICombatActions
+    {
+        void OnShoot(InputAction.CallbackContext context);
+        void OnStartFiring(InputAction.CallbackContext context);
+        void OnStopFiring(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
     }
 }
