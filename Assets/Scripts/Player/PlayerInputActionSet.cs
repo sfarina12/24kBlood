@@ -251,6 +251,15 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShootSyringe"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa818c00-f57d-46ea-80a7-3944791f74ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -297,6 +306,17 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""894e2a60-7ecb-4e4a-8340-5a64d698c892"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShootSyringe"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -314,6 +334,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         m_Combat_StartFiring = m_Combat.FindAction("StartFiring", throwIfNotFound: true);
         m_Combat_StopFiring = m_Combat.FindAction("StopFiring", throwIfNotFound: true);
         m_Combat_Reload = m_Combat.FindAction("Reload", throwIfNotFound: true);
+        m_Combat_ShootSyringe = m_Combat.FindAction("ShootSyringe", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -441,6 +462,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_Combat_StartFiring;
     private readonly InputAction m_Combat_StopFiring;
     private readonly InputAction m_Combat_Reload;
+    private readonly InputAction m_Combat_ShootSyringe;
     public struct CombatActions
     {
         private @PlayerInputActionSet m_Wrapper;
@@ -449,6 +471,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         public InputAction @StartFiring => m_Wrapper.m_Combat_StartFiring;
         public InputAction @StopFiring => m_Wrapper.m_Combat_StopFiring;
         public InputAction @Reload => m_Wrapper.m_Combat_Reload;
+        public InputAction @ShootSyringe => m_Wrapper.m_Combat_ShootSyringe;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,6 +493,9 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @ShootSyringe.started += instance.OnShootSyringe;
+            @ShootSyringe.performed += instance.OnShootSyringe;
+            @ShootSyringe.canceled += instance.OnShootSyringe;
         }
 
         private void UnregisterCallbacks(ICombatActions instance)
@@ -486,6 +512,9 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @ShootSyringe.started -= instance.OnShootSyringe;
+            @ShootSyringe.performed -= instance.OnShootSyringe;
+            @ShootSyringe.canceled -= instance.OnShootSyringe;
         }
 
         public void RemoveCallbacks(ICombatActions instance)
@@ -515,5 +544,6 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         void OnStartFiring(InputAction.CallbackContext context);
         void OnStopFiring(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnShootSyringe(InputAction.CallbackContext context);
     }
 }
