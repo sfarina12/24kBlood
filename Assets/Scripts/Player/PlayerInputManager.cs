@@ -6,12 +6,11 @@ public class PlayerInputManager : MonoBehaviour
 {
     [HideInInspector] public PlayerInputActionSet inputSet;
 
-    void Start() {
+    void Awake() {
         inputSet = new PlayerInputActionSet();       
         inputSet.Enable();
     }
 
-    
     void Update() {
         
     }

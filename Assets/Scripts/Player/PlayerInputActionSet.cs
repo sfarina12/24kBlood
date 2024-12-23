@@ -251,6 +251,15 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""2ce4fc8c-8642-4305-8c76-db86e472bf04"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -297,6 +306,17 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1f87be64-ec0a-4dca-9d21-39c8e7c30bd8"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -314,6 +334,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         m_Combat_StartFiring = m_Combat.FindAction("StartFiring", throwIfNotFound: true);
         m_Combat_StopFiring = m_Combat.FindAction("StopFiring", throwIfNotFound: true);
         m_Combat_Reload = m_Combat.FindAction("Reload", throwIfNotFound: true);
+        m_Combat_Throw = m_Combat.FindAction("Throw", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -441,6 +462,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_Combat_StartFiring;
     private readonly InputAction m_Combat_StopFiring;
     private readonly InputAction m_Combat_Reload;
+    private readonly InputAction m_Combat_Throw;
     public struct CombatActions
     {
         private @PlayerInputActionSet m_Wrapper;
@@ -449,6 +471,7 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         public InputAction @StartFiring => m_Wrapper.m_Combat_StartFiring;
         public InputAction @StopFiring => m_Wrapper.m_Combat_StopFiring;
         public InputAction @Reload => m_Wrapper.m_Combat_Reload;
+        public InputAction @Throw => m_Wrapper.m_Combat_Throw;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,6 +493,9 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
         }
 
         private void UnregisterCallbacks(ICombatActions instance)
@@ -486,6 +512,9 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
         }
 
         public void RemoveCallbacks(ICombatActions instance)
@@ -515,5 +544,6 @@ public partial class @PlayerInputActionSet: IInputActionCollection2, IDisposable
         void OnStartFiring(InputAction.CallbackContext context);
         void OnStopFiring(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
+        void OnThrow(InputAction.CallbackContext context);
     }
 }

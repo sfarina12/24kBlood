@@ -41,8 +41,6 @@ public class SC_FPSController : MonoBehaviour
     [Space,Header("Input System"),Tooltip("Can be null. If null will get input system from player")]
     public PlayerInputManager input;
 
-    public Gun gun;
-
     float rotation_x = 0;
     float jump_factor = 0;
     float gravity_factor = 0;
@@ -59,10 +57,6 @@ public class SC_FPSController : MonoBehaviour
     [HideInInspector] public bool isRunning = false;
     [HideInInspector] public bool isCrouch = false;
     [HideInInspector] public bool isMoving = false;
-
-    
-
-    
 
     void Start() {
         if(input == null) { 
@@ -147,15 +141,6 @@ public class SC_FPSController : MonoBehaviour
         //End camera movement logic
         
         
-    }
-
-    void StartFiring(){
-        fireCoroutine = StartCoroutine(gun.FastFire());
-    }
-    void stopFiring(){
-        if(fireCoroutine != null){
-        StopCoroutine(fireCoroutine);
-        }
     }
 
 
